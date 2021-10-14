@@ -10,9 +10,11 @@
 * android-21-armeabi-v7a (ndk-r20b/api-21)   
 * android-21-arm64-v8a (ndk-r20b/api-21)   
 * android-21-x86 (ndk-r20b/api-21)   
+* android-21-x86_64 (ndk-r20b/api-21)   
 * android-28-armeabi-v7a (ndk-r20b/api-28)   
 * android-28-arm64-v8a (ndk-r20b/api-28)   
 * android-28-x86 (ndk-r20b/api-28)   
+* android-28-x86_64 (ndk-r20b/api-28)   
 * rasbpian-armhf (gcc-4.8.3)   
 * osx-x86_64 (apple-darwin15)   
    
@@ -197,6 +199,26 @@ make
 Get header files from include/libxml   
 Get libxml2.a from .libs
    
+**BUILD LIBXML2 (android-21-x86_64)**   
+Open "Ubuntu 18.04 LTS"   
+```
+git clone https://gitlab.gnome.org/GNOME/libxml2 -b v2.9.11 --depth=1
+export TOOLCHAIN=$(pwd)/android-ndk-r20b/toolchains/llvm/prebuilt/linux-x86_64
+export AR=$TOOLCHAIN/bin/x86_64-linux-android-ar
+export AS=$TOOLCHAIN/bin/x86_64-linux-android-as
+export CC=$TOOLCHAIN/bin/x86_64-linux-android21-clang
+export CXX=$TOOLCHAIN/bin/x86_64-linux-android21-clang++
+export LD=$TOOLCHAIN/bin/x86_64-linux-android-ld
+export RANLIB=$TOOLCHAIN/bin/x86_64-linux-android-ranlib
+export STRIP=$TOOLCHAIN/bin/x86_64-linux-android-strip
+export LIBS=-ldl
+cd libxml2
+./autogen.sh --host=x86_64-linux-android --target=x86_64-linux-android --with-pic --disable-shared --without-iconv --without-http --without-ftp --without-legacy --without-c14n --without-catalog --without-html --without-writer --without-schematron --without-docbook --without-output --without-push --without-modules --without-tree --without-xptr --without-xinclude --without-xpath --without-schemas --without-sax1 --without-iso8859x --without-python --without-zlib --without-lzma
+make
+```
+Get header files from include/libxml   
+Get libxml2.a from .libs
+   
 **BUILD LIBXML2 (android-28-armeabi-v7a)**   
 Open "Ubuntu 18.04 LTS"   
 ```
@@ -251,7 +273,27 @@ export RANLIB=$TOOLCHAIN/bin/i686-linux-android-ranlib
 export STRIP=$TOOLCHAIN/bin/i686-linux-android-strip
 export LIBS=-ldl
 cd libxml2
-./autogen.sh --host=aarch64-linux-android --target=aarch64-linux-android --with-pic --disable-shared --without-iconv --without-http --without-ftp --without-legacy --without-c14n --without-catalog --without-html --without-writer --without-schematron --without-docbook --without-output --without-push --without-modules --without-tree --without-xptr --without-xinclude --without-xpath --without-schemas --without-sax1 --without-iso8859x --without-python --without-zlib --without-lzma
+./autogen.sh --host=i686-linux-android --target=i686-linux-android --with-pic --disable-shared --without-iconv --without-http --without-ftp --without-legacy --without-c14n --without-catalog --without-html --without-writer --without-schematron --without-docbook --without-output --without-push --without-modules --without-tree --without-xptr --without-xinclude --without-xpath --without-schemas --without-sax1 --without-iso8859x --without-python --without-zlib --without-lzma
+make
+```
+Get header files from include/libxml   
+Get libxml2.a from .libs
+   
+**BUILD LIBXML2 (android-28-x86_64)**   
+Open "Ubuntu 18.04 LTS"   
+```
+git clone https://gitlab.gnome.org/GNOME/libxml2 -b v2.9.11 --depth=1
+export TOOLCHAIN=$(pwd)/android-ndk-r20b/toolchains/llvm/prebuilt/linux-x86_64
+export AR=$TOOLCHAIN/bin/x86_64-linux-android-ar
+export AS=$TOOLCHAIN/bin/x86_64-linux-android-as
+export CC=$TOOLCHAIN/bin/x86_64-linux-android28-clang
+export CXX=$TOOLCHAIN/bin/x86_64-linux-android28-clang++
+export LD=$TOOLCHAIN/bin/x86_64-linux-android-ld
+export RANLIB=$TOOLCHAIN/bin/x86_64-linux-android-ranlib
+export STRIP=$TOOLCHAIN/bin/x86_64-linux-android-strip
+export LIBS=-ldl
+cd libxml2
+./autogen.sh --host=x86_64-linux-android --target=x86_64-linux-android --with-pic --disable-shared --without-iconv --without-http --without-ftp --without-legacy --without-c14n --without-catalog --without-html --without-writer --without-schematron --without-docbook --without-output --without-push --without-modules --without-tree --without-xptr --without-xinclude --without-xpath --without-schemas --without-sax1 --without-iso8859x --without-python --without-zlib --without-lzma
 make
 ```
 Get header files from include/libxml   
