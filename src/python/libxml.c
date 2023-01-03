@@ -1886,6 +1886,7 @@ libxml_xmlFreeParserCtxt(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
     return(Py_None);
 }
 
+#ifdef LIBXML_VALID_ENABLED
 /***
  * xmlValidCtxt stuff
  */
@@ -2045,6 +2046,7 @@ libxml_xmlFreeValidCtxt(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     Py_INCREF(Py_None);
     return(Py_None);
 }
+#endif /* LIBXML_VALID_ENABLED */
 
 #ifdef LIBXML_READER_ENABLED
 /************************************************************************
@@ -2436,9 +2438,6 @@ libxml_name(ATTRIBUTE_UNUSED PyObject * self, PyObject * args)
 
     switch (cur->type) {
         case XML_DOCUMENT_NODE:
-#ifdef LIBXML_DOCB_ENABLED
-        case XML_DOCB_DOCUMENT_NODE:
-#endif
         case XML_HTML_DOCUMENT_NODE:{
                 xmlDocPtr doc = (xmlDocPtr) cur;
 
@@ -2483,9 +2482,6 @@ libxml_doc(ATTRIBUTE_UNUSED PyObject * self, PyObject * args)
 
     switch (cur->type) {
         case XML_DOCUMENT_NODE:
-#ifdef LIBXML_DOCB_ENABLED
-        case XML_DOCB_DOCUMENT_NODE:
-#endif
         case XML_HTML_DOCUMENT_NODE:
             res = NULL;
             break;
@@ -2541,9 +2537,6 @@ libxml_next(ATTRIBUTE_UNUSED PyObject * self, PyObject * args)
 
     switch (cur->type) {
         case XML_DOCUMENT_NODE:
-#ifdef LIBXML_DOCB_ENABLED
-        case XML_DOCB_DOCUMENT_NODE:
-#endif
         case XML_HTML_DOCUMENT_NODE:
             res = NULL;
             break;
@@ -2585,9 +2578,6 @@ libxml_prev(ATTRIBUTE_UNUSED PyObject * self, PyObject * args)
 
     switch (cur->type) {
         case XML_DOCUMENT_NODE:
-#ifdef LIBXML_DOCB_ENABLED
-        case XML_DOCB_DOCUMENT_NODE:
-#endif
         case XML_HTML_DOCUMENT_NODE:
             res = NULL;
             break;
@@ -2630,9 +2620,6 @@ libxml_children(ATTRIBUTE_UNUSED PyObject * self, PyObject * args)
         case XML_PI_NODE:
         case XML_COMMENT_NODE:
         case XML_DOCUMENT_NODE:
-#ifdef LIBXML_DOCB_ENABLED
-        case XML_DOCB_DOCUMENT_NODE:
-#endif
         case XML_HTML_DOCUMENT_NODE:
         case XML_DTD_NODE:
             res = cur->children;
@@ -2673,9 +2660,6 @@ libxml_last(ATTRIBUTE_UNUSED PyObject * self, PyObject * args)
         case XML_PI_NODE:
         case XML_COMMENT_NODE:
         case XML_DOCUMENT_NODE:
-#ifdef LIBXML_DOCB_ENABLED
-        case XML_DOCB_DOCUMENT_NODE:
-#endif
         case XML_HTML_DOCUMENT_NODE:
         case XML_DTD_NODE:
             res = cur->last;
@@ -2712,9 +2696,6 @@ libxml_parent(ATTRIBUTE_UNUSED PyObject * self, PyObject * args)
     switch (cur->type) {
         case XML_DOCUMENT_NODE:
         case XML_HTML_DOCUMENT_NODE:
-#ifdef LIBXML_DOCB_ENABLED
-        case XML_DOCB_DOCUMENT_NODE:
-#endif
             res = NULL;
             break;
         case XML_ATTRIBUTE_NODE:{
@@ -2817,11 +2798,6 @@ libxml_type(ATTRIBUTE_UNUSED PyObject * self, PyObject * args)
         case XML_XINCLUDE_END:
             res = (const xmlChar *) "xinclude_end";
             break;
-#ifdef LIBXML_DOCB_ENABLED
-        case XML_DOCB_DOCUMENT_NODE:
-            res = (const xmlChar *) "document_docbook";
-            break;
-#endif
     }
 #ifdef DEBUG
     printf("libxml_type: cur = %p: %s\n", cur, res);
@@ -3822,6 +3798,23 @@ libxml_nodeHash(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
 
 /************************************************************************
  *									*
+ *		Deprecation warnings					*
+ *									*
+ ************************************************************************/
+
+int
+libxml_deprecationWarning(const char *func) {
+#if PY_VERSION_HEX >= 0x03020000
+    return PyErr_WarnFormat(PyExc_PendingDeprecationWarning, 1,
+            "libxml2mod.%s is deprecated and will be removed "
+            "in future versions", func);
+#else
+    return PyErr_WarnEx(PyExc_PendingDeprecationWarning, func, 1);
+#endif
+}
+
+/************************************************************************
+ *									*
  *			The registration stuff				*
  *									*
  ************************************************************************/
@@ -3838,8 +3831,10 @@ static PyMethodDef libxmlMethods[] = {
     {(char *) "doc", libxml_doc, METH_VARARGS, NULL},
     {(char *) "xmlNewNode", libxml_xmlNewNode, METH_VARARGS, NULL},
     {(char *) "xmlNodeRemoveNsDef", libxml_xmlNodeRemoveNsDef, METH_VARARGS, NULL},
+#ifdef LIBXML_VALID_ENABLED
     {(char *)"xmlSetValidErrors", libxml_xmlSetValidErrors, METH_VARARGS, NULL},
     {(char *)"xmlFreeValidCtxt", libxml_xmlFreeValidCtxt, METH_VARARGS, NULL},
+#endif /* LIBXML_VALID_ENABLED */
 #ifdef LIBXML_OUTPUT_ENABLED
     {(char *) "serializeNode", libxml_serializeNode, METH_VARARGS, NULL},
     {(char *) "saveNodeTo", libxml_saveNodeTo, METH_VARARGS, NULL},

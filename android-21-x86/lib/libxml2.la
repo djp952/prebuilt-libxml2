@@ -23,9 +23,9 @@ dependency_libs=' -lm -ldl'
 weak_library_names=''
 
 # Version information for libxml2.
-current=11
-age=9
-revision=13
+current=12
+age=10
+revision=3
 
 # Is this an already installed library?
 installed=yes

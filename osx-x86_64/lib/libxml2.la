@@ -17,15 +17,15 @@ old_library='libxml2.a'
 inherited_linker_flags=' '
 
 # Libraries that this one depends upon.
-dependency_libs=' -lpthread -lm -ldl'
+dependency_libs=' -lpthread -ldl'
 
 # Names of additional weak libraries provided by this library
 weak_library_names=''
 
 # Version information for libxml2.
-current=11
-age=9
-revision=13
+current=12
+age=10
+revision=3
 
 # Is this an already installed library?
 installed=yes

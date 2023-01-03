@@ -5,9 +5,9 @@ includedir=${prefix}/include
 modules=0
 
 Name: libXML
-Version: 2.9.13
+Version: 2.10.3
 Description: libXML library version2.
 Requires:
 Libs: -L${libdir} -lxml2
-Libs.private:  -lpthread    -lm  -ldl
+Libs.private:   -lpthread     -ldl
 Cflags: -I${includedir}/libxml2 

@@ -16,24 +16,40 @@
   # WORKDIR /tests
   # RUN curl https://www.w3.org/XML/Test/xmlts20080827.tar.gz |tar xz
   image: registry.gitlab.gnome.org/gnome/libxml2
+  variables:
+    BASE_CONFIG: "--with-ftp --with-legacy --with-xptr-locs"
   script:
     - |
+      rm -rf build
+      mkdir build
+      cd build
       ln -s /tests/xmlconf
-      sh autogen.sh $CONFIG
+      sh ../autogen.sh $BASE_CONFIG $CONFIG
       make -j$(nproc) V=1 CFLAGS="$CFLAGS -Werror"
-      make check
+      make CFLAGS="$CFLAGS -Werror" check
 
 gcc:
   extends: .test
   variables:
     CFLAGS: "-O2 -std=c89 -D_XOPEN_SOURCE=700"
 
+gcc:minimum:
+  extends: .test
+  variables:
+    BASE_CONFIG: "--with-minimum"
+    CFLAGS: "-O2"
+
 gcc:python3:
   extends: .test
-  only:
-    - schedules
   variables:
-    CONFIG: "--with-python=/usr/bin/python3"
+    # TODO: Re-enable the warning after #208 is fixed.
+    CFLAGS: "-O2 -Wno-error=deprecated-declarations"
+    PYTHON: "/usr/bin/python3"
+
+gcc:static:
+  extends: .test
+  variables:
+    CONFIG: "--disable-shared --without-python"
     CFLAGS: "-O2"
 
 clang:asan:
@@ -41,7 +57,7 @@ clang:asan:
   variables:
     CONFIG: "--without-python"
     CC: clang
-    CFLAGS: "-O2 -g -fno-omit-frame-pointer -fsanitize=address,undefined,integer -fno-sanitize-recover=all -Wno-error=cast-align"
+    CFLAGS: "-O2 -g -fno-omit-frame-pointer -fsanitize=address,undefined,unsigned-integer-overflow,implicit-conversion -fno-sanitize-recover=all -Wno-error=cast-align"
     # LeakSanitizer requires SYS_CAP_PTRACE
     ASAN_OPTIONS: "detect_leaks=0"
     UBSAN_OPTIONS: "print_stacktrace=1"
@@ -279,7 +295,9 @@ cmake:msvc:v141:x86:static:
 pages:
   script:
     - mkdir -p public
-    - cp -r doc/devhelp doc/tutorial doc/xmllint.html doc/xmlcatalog_man.html public
+    - cp -r doc/devhelp doc/tutorial doc/xmllint.html doc/xmlcatalog.html public
+    - mkdir -p public/examples
+    - cp doc/examples/*.html doc/examples/*.c public/examples
   artifacts:
     paths:
       - public
